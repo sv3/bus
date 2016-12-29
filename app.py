@@ -16,6 +16,7 @@ socketio = SocketIO(app)
 @app.route('/', methods=['GET','POST'])
 def index():
     if request.method == 'GET':
+        sendrpm()
         return render_template('index.html')
     else: return ('', 204)
 
