@@ -22,7 +22,7 @@ pypruss.exec_program(0, "./rpm.bin")                # Load firmware on PRU 0
 
 
 def readrpm():
-    pypruss.wait_for_event(0)                           # Wait for event 0 which is connected to PRU0_ARM_INTERRUPT
+    # pypruss.wait_for_event(0)                           # Wait for event 0 which is connected to PRU0_ARM_INTERRUPT
 
     with open('/dev/mem', 'r+b') as m:
         mem = mmap.mmap( m.fileno(), 512*1024, offset=PRU_ICSS)
@@ -31,17 +31,22 @@ def readrpm():
         value = struct.unpack('L', valuestring)[0]
         seconds = value * 0.000000005   # 5ns per cycle
 
-    pypruss.clear_event(0,pypruss.PRU0_ARM_INTERRUPT)   # Clear the event
+    # pypruss.clear_event(0,pypruss.PRU0_ARM_INTERRUPT)   # Clear the event
     # print(seconds)
     return seconds
 
 
 if __name__ == "__main__":
 
+    rpms = []
+
     try:
         while True:
-            print(readrpm())
-            sleep(0.1)
+            rpm = readrpm()
+            print(rpm)
+            rpms.append(rpm)
+
+            # sleep(0.1)
     except KeyboardInterrupt as e:
         print(e)
         run_event.clear()

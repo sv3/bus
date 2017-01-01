@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>BUS chat</title>
+    <meta name=viewport content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="static/css.css" />
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+    <script type="text/javascript" src="static/chat.js"></script>
+</head>
+<body>
+    <h1>C&nbspOOL BUS</h1>
+    
+    <ol id="log" style="list-style-type:none">
+        {% for item in hist %}
+	<li><strong>{{item[0]}}</strong>: {{item[1]|safe}}</li>
+        {% endfor %}
+    </ol>
+    <form id="broadcast" method="POST">
+        <input type="text" name="name" id="name" placeholder="Name" autocomplete="off" autofocus tabindex=1>
+        <input type="submit" value="send" id="submit" tabindex=3>
+        <span id="formspan"><input type="text" name="message" id="message" placeholder="Message" autocomplete="off" required tabindex=2></span>
+    </form>
+</body>
+</html>
