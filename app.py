@@ -8,6 +8,7 @@ from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit, send, disconnect
 from rpm import readrpm
 import OLED, BME280
+import csv
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supercalifragilistic'
@@ -68,12 +69,17 @@ def sendatmo(single=False):
         for i in range(50):
             # read pressure samples for averaging
             pressure_sum += sensor.read_pressure()
+
+        timestamp = time.time()
         temp, humidity = sensor.read_temperature(), sensor.read_humidity()
         pascals = pressure_sum / 50
         pressure_sum = 0
-        altitude = BME280.calc_altitude(pascals)
+        # altitude = BME280.calc_altitude(pascals)
+
         socketio.emit('atmo', { 'temperature':temp, 'pressure':pascals, 'humidity':humidity })
-        # BME280.print_all(temp, pascals, humidity)
+        with open('atmolog.tsv', 'a') as atmolog:
+            w = csv.writer(atmolog, delimiter='\t')
+            w.writerow([timestamp, temp, pascals, humidity])
         if single == True: return
         eventlet.sleep(1)
 
