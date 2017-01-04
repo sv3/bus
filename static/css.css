@@ -5,6 +5,10 @@ body {
     /* height: 100vh; */
 }
 
+label {
+    font-weight: bold;
+}
+
 #log {
     list-style-type: none;
     background-color: white;
@@ -43,5 +47,3 @@ body {
     display:block;
     overflow: hidden;
 }
-
-#rpm, #rpmlabel { display:inline-block; }

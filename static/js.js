@@ -11,10 +11,17 @@ function main() {
     // The callback function is invoked whenever the server emits data
     // to the client
     socket.on('rpm', function(msg) {
-        console.log(msg);
-        msg = msg.toFixed(2)
         var rpmtext = document.getElementById("rpm");
-        rpmtext.innerHTML = msg;
+        rpmtext.innerHTML = msg.toFixed(2);
+    });
+    
+    socket.on('atmo', function(msg) {
+        var pressurespan = document.getElementById("pressure");
+        var temperaturespan = document.getElementById("temperature");
+        var humidityspan = document.getElementById("humidity");
+        pressurespan.innerHTML = (msg.pressure / 1000).toFixed(2);
+        temperaturespan.innerHTML = msg.temperature.toFixed(2);
+        humidityspan.innerHTML = msg.humidity.toFixed(2);
     });
 
 };

@@ -5,7 +5,7 @@ def calc_altitude(pressure, sealevel_pa=101325.0):
     altitude = 44330.0 * (1.0 - pow(pressure / sealevel_pa, (1.0/5.255)))
     return altitude
 
-sensor = BME280(mode=BME280_OSAMPLE_8, busnum=2)
+sensor = BME280(mode=BME280_OSAMPLE_16, busnum=2)
 
 def read_all():
     degrees = sensor.read_temperature()

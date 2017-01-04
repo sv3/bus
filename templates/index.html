@@ -1,18 +1,24 @@
 <!DOCTYPE HTML>
 <html>
-<head>
-    <title>C OOL BUS</title>
-    <meta name=viewport content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="static/css.css" />
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
-    <script type="text/javascript" src="static/js.js"></script>
-</head>
-<body>
-    <h1>C&nbspOOL BUS</h1>
-    <div>
-        <h3 id="rpmlabel">RPM:</h3>
-        <p id="rpm"></p>
-    </div>
-</body>
-</html>
 
+<head>
+  <title>C OOL BUS</title>
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="static/css.css" />
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+  <script type="text/javascript" src="static/js.js"></script>
+</head>
+
+<body>
+  <h1>C&nbspOOL BUS</h1>
+  <div>
+    <h3>Engine</h3>
+    <label>RPM:</label> <span id="rpm"></span>
+    <h3>Atmosphere</h3>
+    <label>Pressure:</label> <span id="pressure"></span><span> hPa</span><br>
+    <label>Temperature:</label> <span id="temperature"></span><span> &degC</span><br>
+    <label>Humidity:</label> <span id="humidity"></span><span> %</span><br>
+  </div>
+</body>
+
+</html>

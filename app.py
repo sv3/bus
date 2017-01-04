@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import eventlet
-eventlet.monkey_patch()
+# eventlet.monkey_patch()
 
 import io, threading, time
 import numpy as np
@@ -59,15 +59,24 @@ def sendrpm(single=False):
         if single == True: return
         eventlet.sleep(0.01)
 
+
 def sendatmo(single=False):
     global sealevel_pa
+    pressure_sum = 0
+    sensor = BME280.sensor
     while True:
-        temp, pascals, humidity = BME280.read_all()
+        for i in range(50):
+            # read pressure samples for averaging
+            pressure_sum += sensor.read_pressure()
+        temp, humidity = sensor.read_temperature(), sensor.read_humidity()
+        pascals = pressure_sum / 50
+        pressure_sum = 0
         altitude = BME280.calc_altitude(pascals)
-        BME280.print_all(temp, pascals, humidity)
+        socketio.emit('atmo', { 'temperature':temp, 'pressure':pascals, 'humidity':humidity })
+        # BME280.print_all(temp, pascals, humidity)
         if single == True: return
         eventlet.sleep(1)
-        
+
 
 if __name__ == '__main__':
     eventlet.spawn(sendrpm) 
