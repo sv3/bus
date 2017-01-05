@@ -1,4 +1,4 @@
-# timer.py - gets time between consecutive edges on GPIO
+# delta.py - gets time between consecutive edges on GPIO
 
 from __future__ import print_function
 
@@ -37,8 +37,6 @@ def read_delta():
 
 
 if __name__ == "__main__":
-
-    rpms = []
 
     try:
         while True:

@@ -17,7 +17,6 @@ socketio = SocketIO(app)
 @app.route('/', methods=['GET','POST'])
 def index():
     if request.method == 'GET':
-        sendrpm(single=True)
         return render_template('index.html')
     else: return ('', 204)
 
@@ -37,48 +36,54 @@ def chat():
 @socketio.on('chat')
 def broadcast_message(msg):
     print msg
-    if not(msg['name']) or msg['name'].isspace():
-        msg['name'] = 'anonymous'
-    entry = u'{}: {}\n'.format(msg['name'], msg['message'])
-    with io.open('history.txt', 'a') as histfile:
-        histfile.write(entry)
+    name, message = msg['name'], msg['message']
+
+    if not(name) or name.isspace(): name = 'anonymous'
+
     socketio.emit('chat', msg, broadcast=True)
+
+    with io.open('history.txt', 'a') as histfile:
+        histfile.write( u'{}: {}\n'.format(name, message) )
 
 
 def sendrpm(single=False):
     while True:
-        hist = []
+        rpmsum = 0
         with eventlet.timeout.Timeout(0.1, False):
             for i in range(10):
-                hist.append(read_delta())
-        mean = np.mean(hist)
+                rpmsum += read_delta()
+        mean = rpmsum / 10
         freq = 1./mean
         OLED.disp_rpm(freq)
         socketio.emit('rpm',freq)
+
         if single == True: return
         eventlet.sleep(0.01)
 
 
 def sendatmo(single=False):
-    global sealevel_pa
-    pressure_sum = 0
     sensor = BME280.sensor
+    n = 50    # number of samples to average
     while True:
-        for i in range(50):
-            # read pressure samples for averaging
+        starttime = time.time()
+        pressure_sum = 0
+
+        # read pressure samples for averaging
+        for i in range(n):
             pressure_sum += sensor.read_pressure()
 
         timestamp = time.time()
         temp, humidity = sensor.read_temperature(), sensor.read_humidity()
-        pascals = pressure_sum / 50
-        pressure_sum = 0
+        pascals = pressure_sum / n
 
         socketio.emit('atmo', { 'temperature':temp, 'pressure':pascals, 'humidity':humidity })
+
         with open('atmolog.tsv', 'a') as atmolog:
             w = csv.writer(atmolog, delimiter='\t')
             w.writerow([timestamp, temp, pascals, humidity])
+
         if single == True: return
-        eventlet.sleep(1)
+        eventlet.sleep(5 - starttime % 5)
 
 
 if __name__ == '__main__':
