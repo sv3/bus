@@ -2,13 +2,11 @@
 import eventlet
 # eventlet.monkey_patch()
 
-import io, threading, time
-import numpy as np
+import io, threading, time, csv, numpy
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit, send, disconnect
-from rpm import readrpm
+from delta import read_delta
 import OLED, BME280
-import csv
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supercalifragilistic'
@@ -52,7 +50,7 @@ def sendrpm(single=False):
         hist = []
         with eventlet.timeout.Timeout(0.1, False):
             for i in range(10):
-                hist.append(readrpm())
+                hist.append(read_delta())
         mean = np.mean(hist)
         freq = 1./mean
         OLED.disp_rpm(freq)
@@ -74,7 +72,6 @@ def sendatmo(single=False):
         temp, humidity = sensor.read_temperature(), sensor.read_humidity()
         pascals = pressure_sum / 50
         pressure_sum = 0
-        # altitude = BME280.calc_altitude(pascals)
 
         socketio.emit('atmo', { 'temperature':temp, 'pressure':pascals, 'humidity':humidity })
         with open('atmolog.tsv', 'a') as atmolog:
